@@ -1,0 +1,59 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: simple-dotnet6-startup
+  labels:
+    app: simple-dotnet6-startup
+    app.kubernetes.io/component: simple-dotnet6-startup
+    app.kubernetes.io/instance: simple-dotnet6-startup
+    app.kubernetes.io/name: simple-dotnet6-startup
+    app.kubernetes.io/part-of: simple-dotnet6-startup
+    app.openshift.io/runtime: dotnet
+    app.openshift.io/runtime-namespace: simple-dotnet6-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-dotnet6-startup
+  template:
+    metadata:
+      labels:
+        app: simple-dotnet6-startup
+        deploymentconfig: simple-dotnet6-startup
+    spec:
+      volumes:
+        - name: app-config
+          configMap:
+            name: app-config
+            defaultMode: 420
+      containers:
+        - resources: {}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 7111
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: simple-dotnet6-startup
+          ports:
+            - containerPort: 7111
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/appsettings.json
+              subPath: appsettings.json
+          terminationMessagePolicy: File
+          image: quay.io/fmeneses/simple-dotnet6-startup:latest
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

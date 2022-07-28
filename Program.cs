@@ -29,6 +29,12 @@ builder.Services.AddSwaggerGen(c =>
 // Add Healtchecks
 builder.Services.AddHealthChecks();
 
+// Add custom json properties file
+builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+{
+    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+});
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 
