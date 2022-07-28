@@ -1,4 +1,4 @@
-# dotnet6-external-configuration
+# dotnet6-external-configuration-with-startup
 
 #BUILD
 
