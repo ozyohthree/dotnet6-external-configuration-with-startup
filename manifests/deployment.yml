@@ -54,7 +54,7 @@ spec:
               mountPath: /app/appsettings.json
               subPath: appsettings.json
           terminationMessagePolicy: File
-          image: quay.io/ohthree/dotnet-app:v1
+          image: quay.io/fmeneses/simple-dotnet6-startup:latest
       restartPolicy: Always
   strategy:
     type: RollingUpdate
