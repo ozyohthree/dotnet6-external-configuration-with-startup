@@ -27,7 +27,13 @@ spec:
             name: app-config
             defaultMode: 420
       containers:
-        - resources: {}
+        - resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 300m
+              memory: 200Mi
           readinessProbe:
             httpGet:
               path: /healthz
@@ -48,7 +54,7 @@ spec:
               mountPath: /app/appsettings.json
               subPath: appsettings.json
           terminationMessagePolicy: File
-          image: quay.io/fmeneses/simple-dotnet6-startup:latest
+          image: quay.io/ohthree/dotnet-app:v1
       restartPolicy: Always
   strategy:
     type: RollingUpdate

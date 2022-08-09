@@ -1,0 +1,17 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ include "simple-dotnet6-startup.fullname" . }}
+  labels: {{- include "simple-dotnet6-startup.labels" . | nindent 4 }}
+spec:
+  host: simple-dotnet6-startup-simple-dotnet6-app.apps-crc.testing
+  to:
+    kind: Service
+    name: {{ include "simple-dotnet6-startup.fullname" . }}
+    weight: 100
+  port:
+    targetPort: 7111-tcp
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
