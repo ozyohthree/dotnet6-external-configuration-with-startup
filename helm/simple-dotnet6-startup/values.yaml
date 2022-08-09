@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/ohthree/dotnet-app
+  repository: quay.io/fmeneses/simple-dotnet6-startup
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
