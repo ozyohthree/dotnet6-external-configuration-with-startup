@@ -28,13 +28,16 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
+securityContext: 
+  capabilities:
+    drop:
+    - ALL
   # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
+  runAsNonRoot: true
   # runAsUser: 1000
+  allowPrivilegeEscalation: false
+  seccompProfile:
+    type: RuntimeDefault
 
 service:
   type: ClusterIP
@@ -65,11 +68,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 300m
+    memory: 512Mi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 150m
+    memory: 256Mi
 
 autoscaling:
   enabled: false

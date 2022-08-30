@@ -4,7 +4,6 @@ metadata:
   name: {{ include "simple-dotnet6-startup.fullname" . }}
   labels: {{- include "simple-dotnet6-startup.labels" . | nindent 4 }}
 spec:
-  host: simple-dotnet6-startup-simple-dotnet6-app.apps-crc.testing
   to:
     kind: Service
     name: {{ include "simple-dotnet6-startup.fullname" . }}
