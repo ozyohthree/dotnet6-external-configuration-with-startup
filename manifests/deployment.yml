@@ -21,41 +21,50 @@ spec:
         app: simple-dotnet6-startup
         deploymentconfig: simple-dotnet6-startup
     spec:
-      volumes:
-        - name: app-config
-          configMap:
-            name: app-config
-            defaultMode: 420
       containers:
-        - resources:
+        - name: simple-dotnet6-startup
+          image: quay.io/fmeneses/simple-dotnet6-startup:latest
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault          
+          resources:
             limits:
               cpu: 500m
               memory: 512Mi
             requests:
               cpu: 300m
               memory: 200Mi
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/appsettings.json
+              subPath: appsettings.json
+          ports:
+            - containerPort: 7111
+              protocol: TCP
           readinessProbe:
             httpGet:
               path: /healthz
               port: 7111
               scheme: HTTP
+            initialDelaySeconds: 5
             timeoutSeconds: 1
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
           terminationMessagePath: /dev/termination-log
-          name: simple-dotnet6-startup
-          ports:
-            - containerPort: 7111
-              protocol: TCP
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: app-config
-              mountPath: /app/appsettings.json
-              subPath: appsettings.json
           terminationMessagePolicy: File
-          image: quay.io/fmeneses/simple-dotnet6-startup:latest
       restartPolicy: Always
+      volumes:
+        - name: app-config
+          configMap:
+            name: app-config
+            defaultMode: 420
   strategy:
     type: RollingUpdate
     rollingUpdate:
