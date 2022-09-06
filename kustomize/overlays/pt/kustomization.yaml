@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base
+- hpa.yml
+
+patches:
+
+- target:
+    kind: Deployment
+  patch: |-
+    - op: replace
+      path: '/spec/template/spec/containers/0/image'
+      value: 'quay.io/fmeneses/simple-dotnet6-startup:latest'
+    - op: replace
+      path: '/spec/template/spec/containers/0/resources/requests/cpu'
+      value: '300m'
+    - op: replace
+      path: '/spec/template/spec/containers/0/resources/requests/memory'
+      value: '256Mi'   

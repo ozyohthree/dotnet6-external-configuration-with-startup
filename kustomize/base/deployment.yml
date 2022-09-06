@@ -1,0 +1,90 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: simple-dotnet6-startup
+  labels:
+    app: simple-dotnet6-startup
+    app.kubernetes.io/component: simple-dotnet6-startup
+    app.kubernetes.io/instance: simple-dotnet6-startup
+    app.kubernetes.io/name: simple-dotnet6-startup
+    app.kubernetes.io/part-of: simple-dotnet6-startup
+    app.openshift.io/runtime: dotnet
+    app.openshift.io/runtime-namespace: simple-dotnet6-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-dotnet6-startup
+  template:
+    metadata:
+      labels:
+        app: simple-dotnet6-startup
+        deploymentconfig: simple-dotnet6-startup
+    spec:
+      containers:
+        - name: simple-dotnet6-startup
+          image: quay.io/fmeneses/simple-dotnet6-startup:latest
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault 
+          ports:
+            - name: http
+              containerPort: 7111
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3 
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            limits:
+              cpu: 300m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi         
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/appsettings.json
+              subPath: appsettings.json
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      restartPolicy: Always
+      volumes:
+        - name: app-config
+          configMap:
+            name: app-config
+            defaultMode: 420
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

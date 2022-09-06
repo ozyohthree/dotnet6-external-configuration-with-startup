@@ -1,0 +1,19 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config
+data:
+  appsettings.json: |
+    {
+      "ConnectionStrings": {
+        "SqlConnection": "Server=host.containers.internal;Database=model;User Id=sa; Password=replaceme;"
+      },
+      "WelcomeMessage": "I'am using a mounted appsetting.json",
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      },
+      "AllowedHosts": "*"
+    }
